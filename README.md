@@ -47,3 +47,6 @@ Also, due to the nature of the operations it performs, the script might take a s
 
 ## Troubleshooting
 If you encounter any problems while using the script, please make sure that you have all the required software installed and that the paths you're providing do not contain any unusual or non-ASCII characters. If you continue to have issues, consider opening an issue with a detailed description of the problem and the exact error messages you're seeing.
+
+## Credits
+This script and accompanying documentation were generated with the help of ChatGPT-4, an advanced AI model developed by OpenAI.
