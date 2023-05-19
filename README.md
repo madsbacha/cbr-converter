@@ -29,7 +29,7 @@ Once these requirements are satisfied, you can run the script from your terminal
 
 - `<input_directory_or_file>`: This argument is mandatory. Specify the .cbr/.cbz file or directory containing .cbr/.cbz files that you want to process.
 - `[output_directory]`: This argument is optional. Specify the directory where you want to save the combined images. If not provided, the script will use the current directory.
-- `[output_format]`: This argument is optional. Specify the format of the combined image file. Can be either 'jpg' or 'png'. If not provided, the script will output JPEG files.
+- `[output_format]`: This argument is optional. Specify the format of the combined image file. Can be either 'jpg' or 'png'. If not provided, the script will output JPEG files. Note that JPEG has a maximum image size of 65,535×65,535 pixels. If your comic book pages exceed this size, consider using the PNG format instead.
 
 Example usage:
 
