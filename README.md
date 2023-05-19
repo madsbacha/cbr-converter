@@ -16,6 +16,11 @@ To use the script, you will need to have the following installed on your system:
 - ImageMagick
 - `unar` utility
 
+On macOS, the requirements can be installed using `brew`:
+```
+brew install unar imagemagick
+```
+
 Once these requirements are satisfied, you can run the script from your terminal as follows:
 
 ```
