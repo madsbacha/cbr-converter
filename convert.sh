@@ -10,8 +10,15 @@ function process_file() {
     local file="$1"
     local extension="${file##*.}"
     local base_name="$(basename "$file" ."$extension")"
-    local uncompress_dir="${base_name}_uncompress"
+    local uncompress_dir_img="${base_name}_uncompress"
+    local uncompress_dir_html="$output_dir/${base_name}"
+    local html_file="$output_dir/${base_name}/index.html"
     local final_image="$output_dir/${base_name}.$output_format"
+
+    local uncompress_dir="$uncompress_dir_img"
+    if [[ "$output_format" == "html" ]]; then
+        uncompress_dir="$uncompress_dir_html"
+    fi
 
     trap cleanup EXIT  # Ensures cleanup happens on script exit
 
@@ -44,32 +51,46 @@ function process_file() {
         return
     fi
 
-
-    # Convert/stack images
-    if ! convert "${images[@]}" -append "$final_image"; then
-        printf "Failed to convert images from file %s. Skipping...\n" "$file"
+    if [[ "$output_format" == "html" ]]; then
+        # Prepare images for HTML
+        images_html=""
+        for img in "${images[@]}"; do
+            # Escape any special characters in the uncompress_dir
+            escaped_uncompress_dir=$(printf '%s\n' "$uncompress_dir" | sed 's:[\\/\.\^\$\*\(\)]:\\&:g')
+            # Get the relative path to the image
+            relative_img_path=$(echo "$img" | perl -pe "s#^$escaped_uncompress_dir/##")
+            # Replace / with \/ for compatibility with sed command
+            escaped_img=${relative_img_path//\//\\/}
+            images_html+="<img src=\"$escaped_img\">"
+        done
+        # Replace placeholder in template with images
+        sed "s/{{images}}/$images_html/g" template.html > "$html_file"
+        printf "HTML folder has been created: %s\n" "$uncompress_dir"
+    else
+        # Convert/stack images
+        if ! convert "${images[@]}" -append "$final_image"; then
+            printf "Failed to convert images from file %s. Skipping...\n" "$file"
+            cleanup
+            return
+        fi
+        printf "Final image has been created: %s\n" "$final_image"
         cleanup
-        return
     fi
-
-    cleanup
-
-    printf "Final image has been created: %s\n" "$final_image"
 }
 
-# Check if the directory/file name is provided
-if [[ "$#" -lt 1 ]]; then
-    printf "Usage: %s directory_or_file [output_directory] [output_format]\n" "$0"
+# Check if the output_format and directory/file name are provided
+if [[ "$#" -lt 2 ]]; then
+    printf "Usage: %s output_format directory_or_file [output_directory]\n" "$0"
     exit 1
 fi
 
-path="$1"
-output_dir="${2:-.}"  # Use current directory as default
-output_format="${3:-jpg}"  # Use jpg as default output format
+output_format="$1"  # Make output_format the first argument
+path="$2"
+output_dir="${3:-.}"  # Use current directory as default
 
 # Check if output format is valid
-if [[ "$output_format" != "jpg" && "$output_format" != "png" ]]; then
-    printf "Invalid output format %s. Use 'jpg' or 'png'.\n" "$output_format"
+if [[ "$output_format" != "jpg" && "$output_format" != "png" && "$output_format" != "html" ]]; then
+    printf "Invalid output format %s. Use 'jpg', 'png' or 'html'.\n" "$output_format"
     exit 1
 fi
 
