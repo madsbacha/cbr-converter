@@ -51,6 +51,19 @@ In this example, the script will process the 'my_comic.cbr' file and output the 
 
 In this example, the script will process the 'my_comic.cbz' file and output the HTML file in the 'output_directory'.
 
+### HTML
+
+You can view the generated HTML either by opening the html files in your browser or by setting up an nginx server to serve the files.
+A Dockerfile is provided with the necessary nginx config to serve the files - just build it using the following command.
+```
+docker build -t nginx-dir .
+```
+Then subsequently use the image, by replacing `output_directory` with the path used above when converting:
+```
+docker run --name cbz-viewer -v 'output_directory:/usr/share/nginx/html:ro' -d -p 8080:80 nginx-dir
+```
+
+
 ## Note
 Please be aware that the script removes the temporary directories it creates during the extraction process, whether it finishes successfully, fails, or is interrupted. Make sure you do not manually use the same directories it uses for extraction, or your data could be lost.
 
