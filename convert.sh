@@ -42,7 +42,7 @@ function process_file() {
     images=()
     while IFS=  read -r -d $'\0'; do
         images+=("$REPLY")
-    done < <(find "$uncompress_dir" \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" \) -print0 | sort -z)
+    done < <(find "$uncompress_dir" \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" \) -print0 | sort -g)
 
     # Check if images were found
     if [[ ${#images[@]} -eq 0 ]]; then
