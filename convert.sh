@@ -53,7 +53,7 @@ function process_file() {
 
     if [[ "$output_format" == "html" ]]; then
         # Prepare images for HTML
-        images_html=""
+        images_array=""
         for img in "${images[@]}"; do
             # Escape any special characters in the uncompress_dir
             escaped_uncompress_dir=$(printf '%s\n' "$uncompress_dir" | sed 's:[\\/\.\^\$\*\(\)]:\\&:g')
@@ -61,10 +61,10 @@ function process_file() {
             relative_img_path=$(echo "$img" | perl -pe "s#^$escaped_uncompress_dir/##")
             # Replace / with \/ for compatibility with sed command
             escaped_img=${relative_img_path//\//\\/}
-            images_html+="<img src=\"$escaped_img\">"
+            images_array+="\"$escaped_img\",\n"
         done
         # Replace placeholder in template with images
-        sed "s/{{images}}/$images_html/g" template.html > "$html_file"
+        sed "s/\[\[images\]\]/$images_array/g" template.html > "$html_file"
         printf "HTML folder has been created: %s\n" "$uncompress_dir"
     else
         # Convert/stack images

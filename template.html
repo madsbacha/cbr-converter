@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
         /* Add your styles here */
@@ -28,9 +29,37 @@
         }
     </style>
 </head>
+
 <body>
+    <div class="container" id="image-container"></div>
     <div class="container">
-        {{images}}
+        <p>End of page.</p>
     </div>
+
+    <script>
+        const images = [
+            [[images]]
+        ];
+
+        function loadImagesSequentially(index = 0) {
+            if (index >= images.length) {
+                return;
+            }
+
+            const imageContainer = document.getElementById('image-container');
+            const imgElement = new Image();
+            imgElement.src = images[index];
+            imgElement.alt = `Image ${index + 1}`;
+            imgElement.onload = function () {
+                imageContainer.appendChild(imgElement);
+                loadImagesSequentially(index + 1);
+            };
+        }
+
+        window.onload = function () {
+            loadImagesSequentially();
+        };
+    </script>
 </body>
+
 </html>
